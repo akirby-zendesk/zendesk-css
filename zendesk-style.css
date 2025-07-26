@@ -307,7 +307,7 @@ input[type="text"], input[type="email"] {
 .card {
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 3px 18px rgba(17,17,13,0.09);
+  box-shadow: 0 4px 22px rgba(17, 17, 13, 0.12);
   padding: 26px 22px;
   margin: 30px 0;
 }
