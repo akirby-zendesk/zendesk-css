@@ -1,0 +1,391 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+/* ---- BEGIN ZENDESK VANILLA SANS FONT FACES ---- */
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Thin.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Thin.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-ThinItalic.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-ThinItalic.woff") format("woff");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Extralight.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Extralight.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-ExtralightItalic.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-ExtralightItalic.woff") format("woff");
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Light.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-LightItalic.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-LightItalic.woff") format("woff");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Regular.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Italic.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Italic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Medium.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-MediumItalic.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-MediumItalic.woff") format("woff");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-SemiBold.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-SemiBoldItalic.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-SemiBoldItalic.woff") format("woff");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Bold.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-BoldItalic.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-BoldItalic.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Black.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vanilla Sans;
+  -moz-font-feature-settings: "liga=0";
+  font-feature-settings: "liga" 0;
+  src: url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-BlackItalic.woff2") format("woff2"),
+       url("https://web-assets.zendesk.com/fonts/VanillaSans/VanillaSans-BlackItalic.woff") format("woff");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+/* ---- END ZENDESK VANILLA SANS FONT FACES ---- */
+
+/* 
+  Zendesk Brand Colors — Use ONLY these approved colors for UI accents, charts, and data visualizations.
+  ---------------------------------------------------------------
+  - Coconut:      #ffffff   (Primary background)
+  - Licorice:     #11110D   (Primary text/foreground)
+  - Matcha:       #D1F470   (Accent, highlight, CTAs, table header border)
+  - Cactus:       #A1D78F   (Chart/graphic accent)
+  - Pineapple:    #FEEB7E   (Chart/graphic accent)
+  - Shamrock:     #2D4C33   (Chart/graphic accent)
+  - Fern:         #203524   (Chart/graphic accent)
+  ---------------------------------------------------------------
+  For any charts or custom data visualizations, 
+  use only these Zendesk colors for bars, lines, pie slices, or highlights.
+*/
+
+/* 
+  Official logo/brand assets for reference (HTML usage):
+  - Main logo (recommended): 
+    https://d1eipm3vz40hy0.cloudfront.net/images/logos/zendesk144.png
+  - Logo favicon: 
+    https://d1eipm3vz40hy0.cloudfront.net/images/logos/zendesk-favicon.svg
+    https://d1eipm3vz40hy0.cloudfront.net/images/logos/favicons/favicon.ico
+  - Other logo sizes:
+    https://d1eipm3vz40hy0.cloudfront.net/images/logos/zendesk152.png
+    https://d1eipm3vz40hy0.cloudfront.net/images/logos/zendesk120.png
+    https://d1eipm3vz40hy0.cloudfront.net/images/logos/zendesk114.png
+    https://d1eipm3vz40hy0.cloudfront.net/images/logos/zendesk72.png
+    https://d1eipm3vz40hy0.cloudfront.net/images/logos/zendesk57.png
+*/
+
+:root {
+  --zd-coconut:   #ffffff;
+  --zd-licorice:  #11110D;
+  --zd-matcha:    #D1F470;
+  --zd-grey:      #F7F7F7;
+  --zd-border:    #EAEAEA;
+  --zd-cactus:    #A1D78F;
+  --zd-pineapple: #FEEB7E;
+  --zd-shamrock:  #2D4C33;
+  --zd-fern:      #203524;
+  --font-brand:   "Vanilla Sans", 'Inter', Arial, sans-serif;
+}
+
+
+/* General layout */
+body {
+  background: var(--zd-coconut);
+  color: var(--zd-licorice);
+  font-family: var(--font-brand);
+  margin: 0;
+  padding: 0;
+  line-height: 1.7;
+  font-size: 18px;
+}
+
+/* Header hierarchy */
+h1, .h1 {
+  font-family: var(--font-brand);
+  color: var(--zd-licorice);
+  font-size: 2.8rem;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  margin: 48px 0 22px 0;
+}
+
+h2, .h2 {
+  font-family: var(--font-brand);
+  color: var(--zd-licorice);
+  font-size: 2rem;
+  letter-spacing: -0.005em;
+  font-weight: 700;
+  margin: 38px 0 15px 0;
+}
+
+h3, .h3 {
+  font-family: var(--font-brand);
+  color: var(--zd-licorice);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 24px 0 10px 0;
+}
+
+h4, .h4 {
+  font-family: var(--font-brand);
+  color: var(--zd-licorice);
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 18px 0 8px 0;
+}
+
+h5, .h5 {
+  font-family: var(--font-brand);
+  color: var(--zd-licorice);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 12px 0 6px 0;
+}
+
+/* Subtitle styling */
+.subtitle {
+  color: #7A7A7A;
+  font-size: 1.15rem;
+  margin-bottom: 22px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+
+/* Container and spacing */
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.cta-btn {
+  background: var(--zd-matcha);
+  color: var(--zd-licorice);
+  border: none;
+  border-radius: 100px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 14px 38px;
+  cursor: pointer;
+  margin-top: 14px;
+  transition: background 0.18s;
+}
+
+.cta-btn:hover { background: #cdfa60; }
+
+input[type="text"], input[type="email"] {
+  padding: 14px 16px;
+  border-radius: 7px;
+  border: 1px solid var(--zd-border);
+  width: 260px;
+  font-size: 1.1rem;
+  margin-right: 10px;
+  background: #fff;
+}
+
+/* Card style */
+.card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 3px 18px rgba(17,17,13,0.09);
+  padding: 26px 22px;
+  margin: 30px 0;
+}
+
+/* Trusted logos */
+.trusted-bar {
+  font-size: 0.98rem;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  margin: 40px 0 16px 0;
+  text-align: center;
+}
+
+.trusted-logos {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Hero images row */
+.hero-img-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  margin-bottom: 36px;
+}
+
+.hero-img-row img {
+  border-radius: 24px;
+  box-shadow: 0 2px 16px rgba(17, 17, 13, 0.06);
+  max-width: 120px;
+  height: auto;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  margin: 28px 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--zd-grey);
+  border-radius: 13px;
+  overflow: hidden;
+  font-size: 1rem;
+  box-shadow: 0 2px 12px rgba(17,17,13,0.05);
+}
+
+th, td {
+  padding: 18px 18px;
+  text-align: left;
+}
+
+th {
+  background: var(--zd-coconut);
+  color: var(--zd-licorice);
+  font-weight: 700;
+  font-size: 1.08rem;
+  border-bottom: 2px solid var(--zd-matcha);
+}
+
+td {
+  background: var(--zd-grey);
+  color: var(--zd-licorice);
+  border-bottom: 1px solid var(--zd-border);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+@media (max-width: 800px) {
+  h1, .h1 { font-size: 1.7rem; }
+  h2, .h2 { font-size: 1.25rem; }
+  .container { padding: 16px 6px; }
+  .hero-img-row { flex-direction: column; gap: 9px; }
+  table, th, td { font-size: 0.98rem; }
+}
