@@ -273,10 +273,12 @@ h5, .h5 {
 
 /* Container and spacing */
 .container {
-  max-width: 980px;
+  width: 90vw;
+  max-width: 1400px; /* optional cap */
   margin: 0 auto;
   padding: 40px 20px;
 }
+
 
 .cta-btn {
   background: var(--zd-matcha);
