@@ -307,11 +307,18 @@ input[type="text"], input[type="email"] {
 
 /* Card style */
 .card {
+  width: 80vw;
+  max-width: none;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 4px 22px rgba(17, 17, 13, 0.12);
   padding: 26px 22px;
-  margin: 30px 0;
+  margin: 30px auto;
+}
+
+.card-content {
+  width: 90%;
+  margin: 0 auto;
 }
 
 /* Trusted logos */
