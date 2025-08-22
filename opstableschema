@@ -1,0 +1,158 @@
+Opportunity & Pipeline Data Dictionary (with Overarching Rules)
+Overarching Rules
+OPPORTUNITY_IS_COMMISSIONABLE → Must always be TRUE.
+
+Stage Classification (based on LEFT(STAGE_NAME,2)):
+
+02,03,04,05,06 → Open deals
+01 → MQLs (Marketing Qualified Leads)
+00 → Tentative leads
+07,08,Fa → Won deals
+Sales Motion Mapping:
+
+online → Self Service
+quoted → Sales Assisted (not self service)
+ARR Rule: When asked for ARR, always use PRODUCT_ARR_USD from FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS where PRODUCT = 'Total Booking'.
+
+Default Join Rule: If no product ARR or revenue data is requested, always join to FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS using CRM_OPPORTUNITY_ID and return PRODUCT = 'Total Booking'. Always filter this table with DATE_LABEL = 'today' to ensure only the latest snapshot is used.
+
+Snapshot Awareness:
+
+All CLEANSED.SALESFORCE.* and FUNCTIONAL.GTM_SALES_OPS.* tables are daily/periodic snapshot tables.
+
+When the user doesn’t ask for specific snapshots or timestamps, always assume the latest snapshot defined strictly by:
+
+VALID_TO_TIMESTAMP = '9999-12-31'
+When combining across multiple SCD2 tables, enforce temporal joins to align snapshots correctly:
+
+X.VALID_FROM_TIMESTAMP <= Y.VALID_TO_TIMESTAMP
+AND X.VALID_TO_TIMESTAMP >= Y.VALID_FROM_TIMESTAMP
+For pipeline/health snapshot tables (DIM_CRM_OPPORTUNITIES_OPEX_HEALTH_DAILY_SNAPSHOT_BCV, GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS), use SOURCE_SNAPSHOT_DATE or DATE_LABEL to align snapshots across datasets.
+
+OWNERID Rule: OWNERID in GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS = OWNER_ID in other tables, representing the opportunity owner.
+
+Table: CLEANSED.SALESFORCE.SALESFORCE_TERRITORY_2_SCD2
+Key Fields:
+
+ID, NAME, TERRITORY_2_MODEL_ID, DESCRIPTION, FULL_TERRITORY_NAME_C, SALES_TERRITORY_C, WW_REGION_C, WW_SUB_REGION_C, MARKET_SEGMENT_C, MARKET_SEGMENT_DETAIL_C, SUPER_SEGMENT_C.
+Use: Territory definitions, hierarchy, metadata for sales alignment.
+Table: CLEANSED.SALESFORCE.SALESFORCE_TERRITORY_2_MODEL_SCD2
+Key Fields:
+
+ID, NAME, DESCRIPTION, MODEL_STATE_C.
+Use: Territory model grouping and configuration.
+Table: CLEANSED.SALESFORCE.SALESFORCE_USER_SCD2
+Key Fields:
+
+ID, NAME, EMAIL, IS_ACTIVE, USER_ROLE_ID, TITLE, VP_TEAM_C, DIR_TEAM_C, MGR_TEAM_C, MARKET_SEGMENT_C, REGION_C, SUBREGION_C, SUPER_SEGMENT_C.
+Use: Sales user attributes, roles, teams, quota info.
+Table: CLEANSED.SALESFORCE.SALESFORCE_USER_ROLE_SCD2
+Key Fields:
+
+ID, NAME, PARENT_ROLE_ID, DEVELOPER_NAME.
+Use: Role hierarchy and access model.
+Table: CLEANSED.SALESFORCE.SALESFORCE_USER_TERRITORY_2_ASSOCIATION_SCD2
+Key Fields:
+
+USER_ID, TERRITORY_2_ID, IS_ACTIVE, ROLE_IN_TERRITORY_2.
+Use: Mapping users to territories at a given time. Active AE/SAE assignments.
+Table: FUNCTIONAL.GTM_SALES_OPS.DIM_CRM_OPPORTUNITIES_OPEX_HEALTH_DAILY_SNAPSHOT_BCV
+Key Fields:
+
+CRM_OPPORTUNITY_ID, SOURCE_SNAPSHOT_DATE, OPPORTUNITY_HEALTH_REASON, OPPORTUNITY_HEALTH_REASON_COLOR, CATEGORY.
+Use: Daily health snapshot of opportunities. Tracks risk/positive indicators.
+Opportunity Health Reason Mapping:
+Competitor Field is empty S3+ → Stage 3+ with no competitor recorded
+D-Score Adherence → Deal not meeting scoring rules
+Did not fall to thresholds → Default healthy
+Exciting NB Opps → High-value new business
+High MEDDPICC Score, early stage → Strong qualification
+Large Expansion Opps >$100k ARR → Major expansion
+Low MEDDPICC Score, late stage → Weak qualification
+MAP Adherence, ARR >= 50k → Missing action plan
+Missing signature date (Stg 6) → Data gap at Stage 6
+NB opps w/o Prof. Services or Partner → Missing PS/partner
+NB opps w/o SC → Missing Sales Consultant
+Need Legal Assistance Flag → Legal involvement required
+No MEDDPICC Score → Incomplete qualification data
+Opp owned by inactive user → Data quality issue
+Opps > 1M next quarter → Major upcoming deal
+Opps > 365 days in future → Overly distant close date
+Opps changed to S1 from S2+ → Regression to Stage 1
+Opps in the past → Close date elapsed
+Opps w/ discovery calls, still at S1 → Stalled despite activity
+Opps w/o Quote S4+ → Missing quote in late stage
+Signature date > Close Date → Invalid sequencing
+Signature date in past → Data inconsistency
+Stage 1 > 30 days → Stuck early-stage deal
+Stale Next Step Last Updated → Activity gap per stage
+Stale Opps → Non-progressing per stage
+Zero Value Opp, Days in Stage > 30 → No value, stalled
+Health Colors:
+Red → Critical risk
+Amber → Warning
+Green → Default healthy
+Dark Green → Strong positive
+Gray → Neutral/info only
+Table: FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS
+Key Fields:
+
+CRM_OPPORTUNITY_ID, SOURCE_SNAPSHOT_DATE, DATE_LABEL, OPPORTUNITY_NAME, STAGE_NAME, OPPORTUNITY_IS_COMMISSIONABLE, SALES_MOTION, VP_TEAM__C_OPPT, DIR_TEAM__C_OPPT, REGION__C_OPPT, PRODUCT, PRODUCT_ARR_USD, PRODUCT_BOOKING_ARR_USD.
+Rules:
+Commissionable → must always be TRUE
+
+Stage Prefix (derived from LEFT(STAGE_NAME,2)):
+
+02–06 → Open
+01 → MQL
+00 → Tentative
+07,08,Fa → Won
+Sales Motion Mapping:
+
+online → Self Service
+quoted → Sales Assisted
+Default Join Rule: If no product ARR or revenue data is requested, join to this table and set PRODUCT = 'Total Booking'. Always filter with DATE_LABEL = 'today'.
+
+Product Mapping:
+Total Booking → All products (default). When selected, no other product revenue should be summed in same field.
+Cross_Sell_ES
+Copilot
+QA
+Ultimate_AR
+WFM
+AR
+Suite
+WEM
+Zendesk_AR
+Contact_Center
+Generative_Search
+ADPP
+ES
+QA_WEM_Allocated
+Ultimate
+AI_Expert
+WFM_WEM_Allocated
+Cross_Sell
+Date_Label Examples:
+today
+beginning of -1 month
+end of -1 quarter
+-2 quarter
+-6 quarter
+beginning of -12 month
+end of -5 quarter
+beginning of -20 month
+(etc. for relative period markers)
+Snapshot Awareness
+All listed tables (CLEANSED.SALESFORCE.*, DIM_CRM_OPPORTUNITIES_OPEX_HEALTH_DAILY_SNAPSHOT_BCV, GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS) contain daily or periodic snapshots.
+Date joins are critical: when combining tables, ensure joins align snapshots correctly using SOURCE_SNAPSHOT_DATE or VALID_FROM/TO_TIMESTAMP rules.
+Relationships
+User ↔ Territory → via USER_TERRITORY_2_ASSOCIATION_SCD2
+Territory ↔ Territory Model → via TERRITORY_2_MODEL_ID
+User ↔ Role → via USER_ROLE_ID
+Pipeline Bookings ↔ Opportunity Health → via CRM_OPPORTUNITY_ID
+Canonical Views (Examples)
+AE_Territory_AsOf → AEs assigned to endpoint territories at given as_of_ts
+Opportunity_Health_Latest → Latest health per opportunity
+Commissionable_Open_Deals_LatestHealth → Commissionable open deals joined with latest health
+Won_Deals_LatestHealth → Won deals joined with latest health
