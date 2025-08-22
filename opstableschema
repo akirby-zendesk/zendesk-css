@@ -1,7 +1,3 @@
-Here’s the document reformatted so that **every section is consistent** with the style you want (all tables follow the `## Table: …` format, with `Key Fields`, `Latest Snapshot Rule` if applicable, and `Use`):
-
----
-
 # Opportunity & Pipeline Data Dictionary (with Overarching Rules)
 
 ## Overarching Rules
@@ -47,11 +43,20 @@ Here’s the document reformatted so that **every section is consistent** with t
 * **OWNERID Rule**:
 
   * `OWNERID` in `GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` = `OWNER_ID` in other tables (opportunity owner).
+
+
 * **Region Rule**:
 
-  * Region comes from `VP_TEAM__C_OPPT`.
+  * Region comes from `VP_TEAM__C_OPPT` OR VP_TEAM_C in the SALESFORCE_USER_SCD2 table.
   * Options: `EMEA`, `NA`, `LATAM`, `APAC`.
   * If user says `NAMER`, `NA`, or `North America` → assume **NA**.
+
+* **SEGMENT Rule**:
+
+  * Segment comes from `MARKET_SEGMENT_C` in the SALESFORCE_USER_SCD2 table.
+  * Options: `Digital`, `SMB`, `Commercial`, `Enterprise`, `Public Sector`, `Strategic`
+  * If user says Enterprise and Commercial or 'EC' , assume they want everything other than 'Digital' and 'SMB' 
+
 
 ---
 
