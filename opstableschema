@@ -11,7 +11,7 @@
 - **Sales Motion Mapping**:
   - `online` → **Self Service**
   - `quoted` → **Sales Assisted** (not self service)
-- **ARR or Opportunity Amount Rule**: When asked for ARR, assume the user wants the total always use **`PRODUCT_ARR_USD`** from `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` where `PRODUCT = 'Total Booking'`.
+- **ARR or Opportunity Amount Rule**: When asked for ARR, the opportunity ARR or opportunity AMOUNT field must always come from joining to the  FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS table ALWAYS where PRODUCT = 'Total Booking' and DATE_LABEL = 'today' - do not present the ARR or opportunity value from any other source - this is UNTRUE when specifically asked for product arr or product revenue or product booking.
 - **Default Join Rule**: If no product ARR or revenue data is requested, always join to `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` using `CRM_OPPORTUNITY_ID` and return `PRODUCT = 'Total Booking'`. Always filter this table with `DATE_LABEL = 'today'` to ensure only the latest snapshot is used.
 - **Snapshot Awareness**:
   - All `CLEANSED.SALESFORCE.*` and `FUNCTIONAL.GTM_SALES_OPS.*` tables are **daily/periodic snapshot tables**.
