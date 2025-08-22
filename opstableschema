@@ -1,173 +1,283 @@
+Here’s the document reformatted so that **every section is consistent** with the style you want (all tables follow the `## Table: …` format, with `Key Fields`, `Latest Snapshot Rule` if applicable, and `Use`):
+
+---
+
 # Opportunity & Pipeline Data Dictionary (with Overarching Rules)
 
 ## Overarching Rules
-- **OPPORTUNITY_IS_COMMISSIONABLE** → Must always be `TRUE`.
-- **LOWER(NON_COMMISSIONABLE_C) Must always be `false`
-- **Stage Classification** (based on `LEFT(STAGE_NAME,2)`):
-  - `02,03,04,05,06` → **Open deals**
-  - `01` → **MQLs (Marketing Qualified Leads)**
-  - `00` → **Tentative leads**
-  - `07,08,Fa` → **Won deals**
-- **Sales Motion Mapping**:
-  - `online` → **Self Service**
-  - `quoted` → **Sales Assisted** (not self service)
-- **ARR or Opportunity Amount Rule**: When asked for ARR, the opportunity ARR or opportunity AMOUNT field must always come from joining to the  FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS table ALWAYS where PRODUCT = 'Total Booking' and DATE_LABEL = 'today' - do not present the ARR or opportunity value from any other source - this is UNTRUE when specifically asked for product arr or product revenue or product booking.
-- **Default Join Rule**: If no product ARR or revenue data is requested, always join to `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` using `CRM_OPPORTUNITY_ID` and return `PRODUCT = 'Total Booking'`. Always filter this table with `DATE_LABEL = 'today'` to ensure only the latest snapshot is used.
-- **Snapshot Awareness**:
-  - All `CLEANSED.SALESFORCE.*` and `FUNCTIONAL.GTM_SALES_OPS.*` tables are **daily/periodic snapshot tables**.
-  - When the user doesn’t ask for specific snapshots or timestamps, always assume the **latest snapshot** defined strictly by:
+
+* **OPPORTUNITY\_IS\_COMMISSIONABLE** → Must always be `TRUE`.
+* **LOWER(NON\_COMMISSIONABLE\_C)** → Must always be `false`.
+* **Stage Classification** (based on `LEFT(STAGE_NAME,2)`):
+
+  * `02,03,04,05,06` → **Open deals**
+  * `01` → **MQLs (Marketing Qualified Leads)**
+  * `00` → **Tentative leads**
+  * `07,08,Fa` → **Won deals**
+* **Sales Motion Mapping**:
+
+  * `online` → **Self Service**
+  * `quoted` → **Sales Assisted** (not self service)
+* **ARR or Opportunity Amount Rule**:
+
+  * When asked for ARR, the opportunity ARR or opportunity AMOUNT must always come from joining to `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS`
+  * Always where `PRODUCT = 'Total Booking'` and `DATE_LABEL = 'today'`
+  * Do not present the ARR/opportunity value from any other source
+  * **Exception**: When specifically asked for product ARR, product revenue, or product booking.
+* **Default Join Rule**:
+
+  * If no product ARR/revenue data is requested, always join to `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` on `CRM_OPPORTUNITY_ID`.
+  * Always set `PRODUCT = 'Total Booking'` and filter with `DATE_LABEL = 'today'`.
+* **Snapshot Awareness**:
+
+  * All `CLEANSED.SALESFORCE.*` and `FUNCTIONAL.GTM_SALES_OPS.*` tables are **snapshot tables**.
+  * Default to **latest snapshot** unless otherwise requested:
+
     ```sql
     VALID_TO_TIMESTAMP = '9999-12-31'
     ```
-  - When combining across multiple SCD2 tables, enforce **temporal joins** to align snapshots correctly:
+  * When joining across multiple SCD2 tables, enforce **temporal joins**:
+
     ```sql
     X.VALID_FROM_TIMESTAMP <= Y.VALID_TO_TIMESTAMP
     AND X.VALID_TO_TIMESTAMP >= Y.VALID_FROM_TIMESTAMP
     ```
-  - For pipeline/health snapshot tables (`DIM_CRM_OPPORTUNITIES_OPEX_HEALTH_DAILY_SNAPSHOT_BCV`, `GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS`), use `SOURCE_SNAPSHOT_DATE` or `DATE_LABEL = 'today'` to align snapshots across datasets.
-- **OWNERID Rule**: `OWNERID` in `GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` = `OWNER_ID` in other tables, representing the **opportunity owner**.
-- **Region Rule**: When the user refers to Region or mentions any of the following (EMEA, AMER, North America, NA, NAMER, LATAM or APAC) user the VP_TEAM__C_OPPT field, the options are EMEA, NA, LATAM or APAC. If the user mentions a region or vp team of NAMER, NA or North America - assume they mean NA 
+  * For pipeline/health snapshot tables (`DIM_CRM_OPPORTUNITIES_OPEX_HEALTH_DAILY_SNAPSHOT_BCV`, `GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS`), use `SOURCE_SNAPSHOT_DATE` or `DATE_LABEL = 'today'`.
+* **OWNERID Rule**:
 
+  * `OWNERID` in `GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` = `OWNER_ID` in other tables (opportunity owner).
+* **Region Rule**:
+
+  * Region comes from `VP_TEAM__C_OPPT`.
+  * Options: `EMEA`, `NA`, `LATAM`, `APAC`.
+  * If user says `NAMER`, `NA`, or `North America` → assume **NA**.
+
+---
+
+## Table: `CLEANSED.SALESFORCE.SALESFORCE_OPPORTUNITY_SCD2`
+
+Key Fields:
+
+* `_FIVETRAN_SYNCED`, `ACCOUNT_ID`, `AE_ASSIGNED_DATE_C`, `AE_IMPLEMENTATION_NOTES_C`, `AMOUNT`, `BUDGET_C`, `BUYER_AGREES_TO_DISCUSS_EXPANSIONS_ADD_C`, `BUYER_APPROVED_EXPANSION_PROPOSAL_C`, `BUYER_CONFIRMED_ZENDESK_IS_ON_SHORTLIST_C`, `CAMPAIGN_ID`, `CEO_AGENDA_C`, `CHAMPION_COACH_C`, `CLOSE_DATE`, `COMPETITIVE_NOTES_C`, `COMPETITORS_C`, `CONTACT_ID`, `CONTRACT_TERM_MONTHS_C`, `CONTRACT_TYPE_C`, `CREATED_BY_ID`, `CREATED_BY_ROLE_C`, `CREATED_DATE`, `CURRENCY_ISO_CODE`, `CURRENT_SYSTEM_NEW_C`, `D_SCORE_LATEST_C`, `DATE_ACCOUNT_BECAME_CUSTOMER_C`, `DEAL_STRATEGY_NOTES_C`, `DEAL_TYPE_C`, `DECISION_CRITERIA_C`, `DECISION_MAKER_ECONOMIC_BUYER_C`, `DECISION_PURCHASE_PROCESS_C`, `DEPARTMENT_OR_USAGE_C`, `DESCRIPTION`, `FISCAL`, `FISCAL_QUARTER`, `FISCAL_YEAR`, `FORECAST_CATEGORY`, `FORECAST_CATEGORY_NAME`, `GOOGLE_LINK_TO_MAP_C`, `HAS_OPEN_ACTIVITY`, `HAS_OPPORTUNITY_LINE_ITEM`, `HAS_OVERDUE_TASK`, `HAS_QUOTE_C`, `ID`, `IS_CLONE_C`, `IS_CLOSED`, `IS_DELETED`, `IS_EXCLUDED_FROM_TERRITORY_2_FILTER`, `IS_SPLIT`, `IS_WON`, `LAST_ACTIVITY_DATE`, `LAST_AMOUNT_CHANGED_HISTORY_ID`, `LAST_CLOSE_DATE_CHANGED_HISTORY_ID`, `LAST_MODIFIED_BY_ID`, `LAST_MODIFIED_DATE`, `LAST_REFERENCED_DATE`, `LAST_STAGE_CHANGE_DATE`, `LAST_VIEWED_DATE`, `LEAD_SOURCE`, `MANAGER_C`, `MANAGER_FORECAST_C`, `MANAGER_NOTES_C`, `MEDDPICC_ALTERNATIVES_C`, `MEDDPICC_ANCHORS_C`, `MEDDPICC_CHAMPION_ACTUAL_C`, `MEDDPICC_CHAMPION_C`, `MEDDPICC_COMPETITION_ACTUAL_C`, `MEDDPICC_COMPETITION_C`, `MEDDPICC_DECISION_CRITERIA_ACTUAL_C`, `MEDDPICC_DECISION_CRITERIA_C`, `MEDDPICC_DECISION_PROCESS_ACTUAL_C`, `MEDDPICC_DECISION_PROCESS_C`, `MEDDPICC_ECONOMIC_BUYER_ACTUAL_C`, `MEDDPICC_ECONOMIC_BUYER_C`, `MEDDPICC_IDENTIFIED_PAIN_ACTUAL_C`, `MEDDPICC_IDENTIFIED_PAIN_C`, `MEDDPICC_METRICS_ACTUAL_C`, `MEDDPICC_METRICS_C`, `MEDDPICC_PAPER_PROCESS_C`, `MEDDPICC_SCORE_LAST_UPDATED_C`, `MOST_RECENT_DISPASSIONATE_ID_C`, `MUTUAL_PLAN_D_A_C`, `NAME`, `NAME_OF_SC_C`, `NEED_LEGAL_ASSISTANCE_THIS_QUARTER_C`, `NEXT_STEP`, `NEXT_STEP_C`, `NEXT_STEP_LAST_UPDATED_C`, `NON_COMMISSIONABLE_C`, `OPPORTUNITY_TYPE_SELECTED_C`, `ORIGINAL_LEAD_SOURCE_DETAIL_C`, `OTHER_COMPETITOR_DETAILS_C`, `OWNER_ID`, `PARTNER_CONTRIBUTION_C`, `PARTNER_DEAL_SOURCE_C`, `PARTNER_ID_C`, `PARTNER_NOTES_C`, `PAYMENT_TERMS_C`, `PRICEBOOK_2_ID`, `PRIMARY_COMPETITOR_NEW_C`, `PRIMARY_DEPARTMENT_C`, `PRIMARY_QUOTE_C`, `PRIMARY_QUOTE_PAYMENT_FREQUENCY_C`, `PRIMARY_QUOTE_PAYMENT_TERMS_C`, `PRIMARY_QUOTE_SKU_NAMES_C`, `PRIMARY_QUOTE_TOTAL_DISCOUNT_AMOUNT_C`, `PRO_SERV_CONTACT_C`, `PUSH_COUNT`, `PUSH_COUNTER_C`, `QUAL_DATE_C`, `QUAL_DATE_COMPLETED_C`, `RECORD_TYPE_ID`, `RED_FLAGS_C`, `REFERRING_PARTNER_C`, `SALES_LEAD_SOURCE_C`, `SALES_MODEL_C`, `SALES_PLAY_C`, `SALESFORCE_OPPORTUNITY_SCD2_ID`, `SC_MANAGER_NOTES_C`, `SC_REASON_WIN_LOSS_C`, `SDR_BDR_QUALIFIED_ROLE_C`, `SDR_NEXT_STEPS_C`, `SDR_QUALIFIED_NEW_C`, `SELF_SERVICE_TOUCHED_C`, `SERVICES_ESTIMATE_C`, `SIGNATURE_DATE_C`, `STAGE_2_PLUS_DATE_C`, `STAGE_NAME`, `STRATEGIC_AE_C`, `SYSTEM_MODSTAMP`, `TERRITORY_2_ID`, `VALID_FROM_TIMESTAMP`, `VALID_TO_TIMESTAMP`, `VP_DEAL_FORECAST_C`, `VP_NOTES_C`, `WHY_BUY_ZENDESK_C`, `ZENDESK_INSTANCE_C`.
+
+* **Latest Snapshot Rule**: Always filter on `VALID_TO_TIMESTAMP = '9999-12-31'`.
+
+* **Use**: Core opportunity fact table containing all Salesforce opportunity fields including financials, forecasting, MEDDPICC methodology, competitive notes, partner involvement, dates, ownership, and lifecycle metadata.
 
 ---
 
 ## Table: `CLEANSED.SALESFORCE.SALESFORCE_TERRITORY_2_SCD2`
-Key Fields: 
-- `ID`, `NAME`, `TERRITORY_2_MODEL_ID`, `DESCRIPTION`, `FULL_TERRITORY_NAME_C`, `SALES_TERRITORY_C`, `WW_REGION_C`, `WW_SUB_REGION_C`, `MARKET_SEGMENT_C`, `MARKET_SEGMENT_DETAIL_C`, `SUPER_SEGMENT_C`.
-- **Use**: Territory definitions, hierarchy, metadata for sales alignment.
+
+Key Fields:
+
+* `ID`, `NAME`, `TERRITORY_2_MODEL_ID`, `DESCRIPTION`, `FULL_TERRITORY_NAME_C`, `SALES_TERRITORY_C`, `WW_REGION_C`, `WW_SUB_REGION_C`, `MARKET_SEGMENT_C`, `MARKET_SEGMENT_DETAIL_C`, `SUPER_SEGMENT_C`.
+* **Use**: Territory definitions, hierarchy, metadata for sales alignment.
 
 ---
 
 ## Table: `CLEANSED.SALESFORCE.SALESFORCE_TERRITORY_2_MODEL_SCD2`
+
 Key Fields:
-- `ID`, `NAME`, `DESCRIPTION`, `MODEL_STATE_C`.
-- **Use**: Territory model grouping and configuration.
+
+* `ID`, `NAME`, `DESCRIPTION`, `MODEL_STATE_C`.
+* **Use**: Territory model grouping and configuration.
 
 ---
 
 ## Table: `CLEANSED.SALESFORCE.SALESFORCE_USER_SCD2`
+
 Key Fields:
-- `ID`, `NAME`, `EMAIL`, `IS_ACTIVE`, `USER_ROLE_ID`, `TITLE`, `VP_TEAM_C`, `DIR_TEAM_C`, `MGR_TEAM_C`, `MARKET_SEGMENT_C`, `REGION_C`, `SUBREGION_C`, `SUPER_SEGMENT_C`.
-- **Use**: Sales user attributes, roles, teams, quota info.
+
+* `ID`, `NAME`, `EMAIL`, `IS_ACTIVE`, `USER_ROLE_ID`, `TITLE`, `VP_TEAM_C`, `DIR_TEAM_C`, `MGR_TEAM_C`, `MARKET_SEGMENT_C`, `REGION_C`, `SUBREGION_C`, `SUPER_SEGMENT_C`.
+* **Use**: Sales user attributes, roles, teams, quota info.
 
 ---
 
 ## Table: `CLEANSED.SALESFORCE.SALESFORCE_USER_ROLE_SCD2`
+
 Key Fields:
-- `ID`, `NAME`, `PARENT_ROLE_ID`, `DEVELOPER_NAME`.
-- **Use**: Role hierarchy and access model.
+
+* `ID`, `NAME`, `PARENT_ROLE_ID`, `DEVELOPER_NAME`.
+* **Use**: Role hierarchy and access model.
 
 ---
 
 ## Table: `CLEANSED.SALESFORCE.SALESFORCE_USER_TERRITORY_2_ASSOCIATION_SCD2`
+
 Key Fields:
-- `USER_ID`, `TERRITORY_2_ID`, `IS_ACTIVE`, `ROLE_IN_TERRITORY_2`.
-- **Use**: Mapping users to territories at a given time. Active AE/SAE assignments.
+
+* `USER_ID`, `TERRITORY_2_ID`, `IS_ACTIVE`, `ROLE_IN_TERRITORY_2`.
+* **Use**: Mapping users to territories at a given time. Active AE/SAE assignments.
 
 ---
 
 ## Table: `FUNCTIONAL.GTM_SALES_OPS.DIM_CRM_OPPORTUNITIES_OPEX_HEALTH_DAILY_SNAPSHOT_BCV`
+
 Key Fields:
-- `CRM_OPPORTUNITY_ID`, `SOURCE_SNAPSHOT_DATE`, `OPPORTUNITY_HEALTH_REASON`, `OPPORTUNITY_HEALTH_REASON_COLOR`, `CATEGORY`.
-- **Use**: Daily health snapshot of opportunities. Tracks risk/positive indicators.
 
-### Opportunity Health Reason Mapping:
-- **Competitor Field is empty S3+** → Stage 3+ with no competitor recorded
-- **D-Score Adherence** → Deal not meeting scoring rules
-- **Did not fall to thresholds** → Default healthy
-- **Exciting NB Opps** → High-value new business
-- **High MEDDPICC Score, early stage** → Strong qualification
-- **Large Expansion Opps >$100k ARR** → Major expansion
-- **Low MEDDPICC Score, late stage** → Weak qualification
-- **MAP Adherence, ARR >= 50k** → Missing action plan
-- **Missing signature date (Stg 6)** → Data gap at Stage 6
-- **NB opps w/o Prof. Services or Partner** → Missing PS/partner
-- **NB opps w/o SC** → Missing Sales Consultant
-- **Need Legal Assistance Flag** → Legal involvement required
-- **No MEDDPICC Score** → Incomplete qualification data
-- **Opp owned by inactive user** → Data quality issue
-- **Opps > 1M next quarter** → Major upcoming deal
-- **Opps > 365 days in future** → Overly distant close date
-- **Opps changed to S1 from S2+** → Regression to Stage 1
-- **Opps in the past** → Close date elapsed
-- **Opps w/ discovery calls, still at S1** → Stalled despite activity
-- **Opps w/o Quote S4+** → Missing quote in late stage
-- **Signature date > Close Date** → Invalid sequencing
-- **Signature date in past** → Data inconsistency
-- **Stage 1 > 30 days** → Stuck early-stage deal
-- **Stale Next Step Last Updated** → Activity gap per stage
-- **Stale Opps** → Non-progressing per stage
-- **Zero Value Opp, Days in Stage > 30** → No value, stalled
+* `CRM_OPPORTUNITY_ID`, `SOURCE_SNAPSHOT_DATE`, `OPPORTUNITY_HEALTH_REASON`, `OPPORTUNITY_HEALTH_REASON_COLOR`, `CATEGORY`.
+* **Use**: Daily health snapshot of opportunities. Tracks risk/positive indicators.
 
-### Health Colors:
-- **Red** → Critical risk
-- **Amber** → Warning
-- **Green** → Default healthy
-- **Dark Green** → Strong positive
-- **Gray** → Neutral/info only
+### Opportunity Health Reason Mapping
+
+* **Competitor Field is empty S3+** → Stage 3+ with no competitor recorded
+* **D-Score Adherence** → Deal not meeting scoring rules
+* **Did not fall to thresholds** → Default healthy
+* **Exciting NB Opps** → High-value new business
+* **High MEDDPICC Score, early stage** → Strong qualification
+* **Large Expansion Opps >\$100k ARR** → Major expansion
+* **Low MEDDPICC Score, late stage** → Weak qualification
+* **MAP Adherence, ARR >= 50k** → Missing action plan
+* **Missing signature date (Stg 6)** → Data gap at Stage 6
+* **NB opps w/o Prof. Services or Partner** → Missing PS/partner
+* **NB opps w/o SC** → Missing Sales Consultant
+* **Need Legal Assistance Flag** → Legal involvement required
+* **No MEDDPICC Score** → Incomplete qualification data
+* **Opp owned by inactive user** → Data quality issue
+* **Opps > 1M next quarter** → Major upcoming deal
+* **Opps > 365 days in future** → Overly distant close date
+* **Opps changed to S1 from S2+** → Regression to Stage 1
+* **Opps in the past** → Close date elapsed
+* **Opps w/ discovery calls, still at S1** → Stalled despite activity
+* **Opps w/o Quote S4+** → Missing quote in late stage
+* **Signature date > Close Date** → Invalid sequencing
+* **Signature date in past** → Data inconsistency
+* **Stage 1 > 30 days** → Stuck early-stage deal
+* **Stale Next Step Last Updated** → Activity gap per stage
+* **Stale Opps** → Non-progressing per stage
+* **Zero Value Opp, Days in Stage > 30** → No value, stalled
+
+### Health Colors
+
+* **Red** → Critical risk
+* **Amber** → Warning
+* **Green** → Default healthy
+* **Dark Green** → Strong positive
+* **Gray** → Neutral/info only
 
 ---
 
 ## Table: `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS`
+
 Key Fields:
-- `CRM_OPPORTUNITY_ID`, `SOURCE_SNAPSHOT_DATE`, `OPPORTUNITY_NAME`, `STAGE_NAME`, `OPPORTUNITY_IS_COMMISSIONABLE`, `SALES_MOTION`, `VP_TEAM__C_OPPT`, `DIR_TEAM__C_OPPT`, `REGION__C_OPPT`, `PRODUCT`, `PRODUCT_ARR_USD`, `PRODUCT_BOOKING_ARR_USD`, `DATE_LABEL`.
 
-### Rules:
-- **Commissionable** → must always be `TRUE`
-- **Stage Prefix** (derived from LEFT(STAGE_NAME,2)):
-  - `02–06` → Open
-  - `01` → MQL
-  - `00` → Tentative
-  - `07,08,Fa` → Won
-- **Sales Motion Mapping**:
-  - `online` → Self Service
-  - `quoted` → Sales Assisted
-- **Default Join Rule**: If no product ARR or revenue data is requested, join to this table and set `PRODUCT = 'Total Booking'`. Always filter this table with `DATE_LABEL = 'today'`.
+* `CRM_OPPORTUNITY_ID`, `SOURCE_SNAPSHOT_DATE`, `OPPORTUNITY_NAME`, `STAGE_NAME`, `OPPORTUNITY_IS_COMMISSIONABLE`, `SALES_MOTION`, `VP_TEAM__C_OPPT`, `DIR_TEAM__C_OPPT`, `REGION__C_OPPT`, `PRODUCT`, `PRODUCT_ARR_USD`, `PRODUCT_BOOKING_ARR_USD`, `DATE_LABEL`.
 
-### Product Mapping:
-- **Total Booking** → All products (default). When selected, no other product revenue should be summed in same field.
-- **Cross_Sell_ES**
-- **Copilot**
-- **QA**
-- **Ultimate_AR**
-- **WFM**
-- **AR**
-- **Suite**
-- **WEM**
-- **Zendesk_AR**
-- **Contact_Center**
-- **Generative_Search**
-- **ADPP**
-- **ES**
-- **QA_WEM_Allocated**
-- **Ultimate**
-- **AI_Expert**
-- **WFM_WEM_Allocated**
-- **Cross_Sell**
+### Rules
 
-### Date_Label Examples:
-- `today`
-- `beginning of -1 month`
-- `end of -1 quarter`
-- `-2 quarter`
-- `-6 quarter`
-- `beginning of -12 month`
-- `end of -5 quarter`
-- `beginning of -20 month`
-- (etc. for relative period markers)
+* **Commissionable** → must always be `TRUE`
+* **Stage Prefix**:
+
+  * `02–06` → Open
+  * `01` → MQL
+  * `00` → Tentative
+  * `07,08,Fa` → Won
+* **Sales Motion Mapping**:
+
+  * `online` → Self Service
+  * `quoted` → Sales Assisted
+* **Default Join Rule**: If no product ARR/revenue requested, join to this table and set `PRODUCT = 'Total Booking'`. Always filter with `DATE_LABEL = 'today'`.
+
+### Product Mapping
+
+* **Total Booking** (default)
+* Cross\_Sell\_ES
+* Copilot
+* QA
+* Ultimate\_AR
+* WFM
+* AR
+* Suite
+* WEM
+* Zendesk\_AR
+* Contact\_Center
+* Generative\_Search
+* ADPP
+* ES
+* QA\_WEM\_Allocated
+* Ultimate
+* AI\_Expert
+* WFM\_WEM\_Allocated
+* Cross\_Sell
+
+### Date\_Label Examples
+
+* `today`
+* `beginning of -1 month`
+* `end of -1 quarter`
+* `-2 quarter`
+* `-6 quarter`
+* `beginning of -12 month`
+* `end of -5 quarter`
+* `beginning of -20 month`
+* (etc.)
 
 ---
 
 ## Relationships
-- **User ↔ Territory** → via `USER_TERRITORY_2_ASSOCIATION_SCD2`
-- **Territory ↔ Territory Model** → via `TERRITORY_2_MODEL_ID`
-- **User ↔ Role** → via `USER_ROLE_ID`
-- **Pipeline Bookings ↔ Opportunity Health** → via `CRM_OPPORTUNITY_ID`
+
+Yes — here’s a full list of all the relationships across the tables you’ve defined, written in the same consistent style as the rest of the document.
+
+---
+
+## Relationships
+
+### Opportunity ↔ Pipeline Bookings
+
+* `CLEANSED.SALESFORCE.SALESFORCE_OPPORTUNITY_SCD2.ID` = `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS.CRM_OPPORTUNITY_ID`
+* Ensures opportunity metadata aligns with booking/ARR values.
+
+### Opportunity ↔ Opportunity Health
+
+* `CLEANSED.SALESFORCE.SALESFORCE_OPPORTUNITY_SCD2.ID` = `FUNCTIONAL.GTM_SALES_OPS.DIM_CRM_OPPORTUNITIES_OPEX_HEALTH_DAILY_SNAPSHOT_BCV.CRM_OPPORTUNITY_ID`
+* Joins the core opportunity to its latest daily health status.
+
+### Opportunity ↔ Territory
+
+* `CLEANSED.SALESFORCE.SALESFORCE_OPPORTUNITY_SCD2.TERRITORY_2_ID` = `CLEANSED.SALESFORCE.SALESFORCE_TERRITORY_2_SCD2.ID`
+* Maps opportunities to their assigned sales territories.
+
+### Territory ↔ Territory Model
+
+* `CLEANSED.SALESFORCE.SALESFORCE_TERRITORY_2_SCD2.TERRITORY_2_MODEL_ID` = `CLEANSED.SALESFORCE.SALESFORCE_TERRITORY_2_MODEL_SCD2.ID`
+* Provides hierarchy and configuration context for each territory.
+
+### User ↔ Opportunity
+
+* `CLEANSED.SALESFORCE.SALESFORCE_OPPORTUNITY_SCD2.OWNER_ID` = `CLEANSED.SALESFORCE.SALESFORCE_USER_SCD2.ID`
+* Identifies the opportunity owner.
+
+### User ↔ Territory
+
+* `CLEANSED.SALESFORCE.SALESFORCE_USER_TERRITORY_2_ASSOCIATION_SCD2.USER_ID` = `CLEANSED.SALESFORCE.SALESFORCE_USER_SCD2.ID`
+* `CLEANSED.SALESFORCE.SALESFORCE_USER_TERRITORY_2_ASSOCIATION_SCD2.TERRITORY_2_ID` = `CLEANSED.SALESFORCE.SALESFORCE_TERRITORY_2_SCD2.ID`
+* Maps users to territories, including role and active assignment status.
+
+### User ↔ Role
+
+* `CLEANSED.SALESFORCE.SALESFORCE_USER_SCD2.USER_ROLE_ID` = `CLEANSED.SALESFORCE.SALESFORCE_USER_ROLE_SCD2.ID`
+* Assigns each user to a role in the Salesforce hierarchy.
+
+### Role ↔ Parent Role
+
+* `CLEANSED.SALESFORCE.SALESFORCE_USER_ROLE_SCD2.PARENT_ROLE_ID` = `CLEANSED.SALESFORCE.SALESFORCE_USER_ROLE_SCD2.ID`
+* Enables traversal of the Salesforce role hierarchy.
+
+### Pipeline Bookings ↔ User
+
+* `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS.OWNERID` = `CLEANSED.SALESFORCE.SALESFORCE_USER_SCD2.ID`
+* Ensures pipeline bookings can be attributed back to the correct Salesforce user.
+
+### Pipeline Bookings ↔ Region
+
+* `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS.VP_TEAM__C_OPPT` = Region classification (`EMEA`, `NA`, `LATAM`, `APAC`).
+* Normalises regional reporting for pipeline metrics.
 
 ---
 
 ## Canonical Views (Examples)
-- **AE_Territory_AsOf** → AEs assigned to endpoint territories at given `as_of_ts`
-- **Opportunity_Health_Latest** → Latest health per opportunity
-- **Commissionable_Open_Deals_LatestHealth** → Commissionable open deals joined with latest health
-- **Won_Deals_LatestHealth** → Won deals joined with latest health
+
+* **AE\_Territory\_AsOf** → AEs assigned to endpoint territories at given `as_of_ts`
+* **Opportunity\_Health\_Latest** → Latest health per opportunity
+* **Commissionable\_Open\_Deals\_LatestHealth** → Commissionable open deals joined with latest health
+* **Won\_Deals\_LatestHealth** → Won deals joined with latest health
