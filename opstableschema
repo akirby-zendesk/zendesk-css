@@ -43,6 +43,7 @@
 * **OWNERID Rule**:
 
   * `OWNERID` in `GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` = `OWNER_ID` in other tables (opportunity owner).
+  * If `Sales Manager` or 'FLM' are mentioned, this is the name of the manager of the opportunity owner. You obtain this by joining the salesforce.user table back to itself on the manager = id and returning the name field from the subsequent join, always refer to this role as the FLM
 
 
 * **Region Rule**:
