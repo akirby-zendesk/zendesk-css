@@ -25,6 +25,8 @@
     ```
   - For pipeline/health snapshot tables (`DIM_CRM_OPPORTUNITIES_OPEX_HEALTH_DAILY_SNAPSHOT_BCV`, `GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS`), use `SOURCE_SNAPSHOT_DATE` or `DATE_LABEL = 'today'` to align snapshots across datasets.
 - **OWNERID Rule**: `OWNERID` in `GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` = `OWNER_ID` in other tables, representing the **opportunity owner**.
+- **Region Rule**: When the user refers to Region or mentions any of the following (EMEA, AMER, North America, NA, NAMER, LATAM or APAC) user the VP_TEAM__C_OPPT field, the options are EMEA, NA, LATAM or APAC. If the user mentions a region or vp team of NAMER, NA or North America - assume they mean NA 
+
 
 ---
 
