@@ -2,6 +2,7 @@
 
 ## Overarching Rules
 - **OPPORTUNITY_IS_COMMISSIONABLE** → Must always be `TRUE`.
+- **LOWER(NON_COMMISSIONABLE_C) Must always be `false`
 - **Stage Classification** (based on `LEFT(STAGE_NAME,2)`):
   - `02,03,04,05,06` → **Open deals**
   - `01` → **MQLs (Marketing Qualified Leads)**
@@ -10,7 +11,7 @@
 - **Sales Motion Mapping**:
   - `online` → **Self Service**
   - `quoted` → **Sales Assisted** (not self service)
-- **ARR Rule**: When asked for ARR, always use **`PRODUCT_ARR_USD`** from `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` where `PRODUCT = 'Total Booking'`.
+- **ARR or Opportunity Amount Rule**: When asked for ARR, assume the user wants the total always use **`PRODUCT_ARR_USD`** from `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` where `PRODUCT = 'Total Booking'`.
 - **Default Join Rule**: If no product ARR or revenue data is requested, always join to `FUNCTIONAL.GTM_SALES_OPS.GTMSI_CONSOLIDATED_PIPELINE_BOOKINGS` using `CRM_OPPORTUNITY_ID` and return `PRODUCT = 'Total Booking'`. Always filter this table with `DATE_LABEL = 'today'` to ensure only the latest snapshot is used.
 - **Snapshot Awareness**:
   - All `CLEANSED.SALESFORCE.*` and `FUNCTIONAL.GTM_SALES_OPS.*` tables are **daily/periodic snapshot tables**.
