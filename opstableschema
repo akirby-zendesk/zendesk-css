@@ -6,6 +6,7 @@ Here’s the document reformatted so that **every section is consistent** with t
 
 ## Overarching Rules
 
+* **Any reference to opportunity health or progression** The source of truth is `FUNCTIONAL.GTM_SALES_OPS.DIM_CRM_OPPORTUNITIES_OPEX_HEALTH_DAILY_SNAPSHOT_BCV` - use this table for any opportunity health metric - any reference to health colour classification will be found in this table along with the reason why an opportunity is each colour.
 * **OPPORTUNITY\_IS\_COMMISSIONABLE** → Must always be `TRUE`.
 * **LOWER(NON\_COMMISSIONABLE\_C)** → Must always be `false`.
 * **Stage Classification** (based on `LEFT(STAGE_NAME,2)`):
